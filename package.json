@@ -1,0 +1,19 @@
+{
+  "name": "olap-1",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "prestart": "yarn build",
+    "dev": "tsc-watch --onSuccess \"node .\"",
+    "start": "node ."
+  },
+  "devDependencies": {
+    "tsc-watch": "^4.2.9",
+    "typescript": "^4.1.5"
+  },
+  "dependencies": {
+    "csv-parser": "^3.0.0"
+  }
+}
