@@ -11,7 +11,7 @@ export default class LocationWeather {
     constructor(weatherData: WeatherData[], public airport: Airport){
         this.code = weatherData[0].ident
         this.timeZone = weatherData[0].timeZone
-        this.weather = weatherData.map(({time, type, severity}) => ({time, type, severity}))
+        this.weather = weatherData.map(({time, type, severity, timeZone}) => ({time, type, severity, timeZone}))
     }
 
     findWeatherByTime(time: Time): Weather {

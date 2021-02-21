@@ -32,9 +32,14 @@ export interface InputFlightData {
 
 export interface Flight {
     airline: string
-    flightNumber: string
+    flightNumber: number
     origin: string
     destination: string
     expectedDepartureTime: Time,
-    delay: number
+    delay: number,
+    taxiOut: number,
+    arrivalDelay: number,
+    airTime: number,
+    distance: number
+    region: string
 }

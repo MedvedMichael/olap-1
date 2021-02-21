@@ -1,5 +1,5 @@
-import { InputAirportData, Airport } from "./interfaces/Airport";
-import processDataFromCSV from "./services/csv-parsing-service";
+import { InputAirportData, Airport } from "../interfaces/Airport";
+import processDataFromCSV from "../services/csv-parsing-service";
 
 const filterFunction = (item: InputAirportData) => item.iata_code !== '' && item.iso_country === 'US'
 
@@ -9,7 +9,7 @@ const mapFunction = ({ iata_code, name, latitude_deg, longitude_deg, ident, iso_
 
 export default async function parseAirports(): Promise<Airport[]> {
     const airports: Airport[] = []
-    await processDataFromCSV('./datasets/airports.csv', (airportsData: InputAirportData, stream) => {
+    await processDataFromCSV('./datasets/airports.csv', async (airportsData: InputAirportData, stream) => {
         if (!filterFunction(airportsData)) return;
         const mappedData = mapFunction(airportsData)
         airports.push(mappedData)

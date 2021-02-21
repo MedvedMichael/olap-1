@@ -1,24 +1,37 @@
-import parseAirports from './parse-airports';
-import parseFlights from './parse-flights';
-import parseWeather from './parse-weather';
-import getDeltaBetweenDates from './services/time-calculator';
+import parseAirports from './parsers/parse-airports';
+import parseFlights from './parsers/parse-flights';
+import parseWeather from './parsers/parse-weather';
+import * as dotenv from 'dotenv';
+import uploadAirports from './db/airports';
+import { PgService } from './services/pg.service';
+import { uploadDefaultWeather } from './db/weather';
+import uploadDefaultTimes from './db/times';
+import { uploadDefaultTimeZones } from './db/time-zones';
+import { uploadDefaultRegions } from './db/regions';
+import filterArrayFromDublicates from './services/array-distinct'
+import uploadFacts from './db/fact-delays';
+import { Weather } from './interfaces/Weather';
+import { Flight } from './interfaces/Flight';
+import { uploadDefaultAirlines } from './db/airlines';
+import { uploadDefaultFlights } from './db/flights';
+import parseCSVByLines from './services/csv-parser';
+
+dotenv.config();
 
 
 (async () => {
     const airports = await parseAirports()
+    console.log("Airports parsed")
+    // await uploadDefaultWeather() //done
+    // await uploadAirports(airports) //done
+    // await uploadDefaultTimes() //done
+    // await uploadDefaultTimeZones() //done
+    // await uploadDefaultRegions() //done
+    // await uploadDefaultAirlines() //done
+    // await uploadDefaultFlights() //done
+    // console.log("Defaults uploaded")
+
     const locationWeathers = await parseWeather(airports)
-    const codes = locationWeathers.map(item => item.airport.code)
-    const flights = await parseFlights(codes)
-    const location = locationWeathers.find(item => item.airport.code === flights[0].origin)
-    const weather = location.findWeatherByTime(flights[6].expectedDepartureTime)
-    console.log(flights[6])
-    console.log(weather)
-    // console.log(getDeltaBetweenDates( { month: 1, day: 1, hours: 13, minutes: 20 },  { month: 1, day: 1, hours: 14, minutes: 53 }))
-    // const arr = [1,2,3,4,5]
-    // console.log(arr.slice(0,4))
-    // console.log(locationWeathers[0])
-    // console.log(locationWeathers[1])
-    // console.log(locationWeathers[2])
-    // console.log(locationWeathers[3])
-    // console.log(locationWeathers[4])
+    console.log("Weather parsed")
+    await parseFlights(locationWeathers)
 })()

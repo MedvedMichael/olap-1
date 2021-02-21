@@ -1,15 +1,15 @@
-import { Airport } from "./interfaces/Airport";
-import { Time } from "./interfaces/Time";
-import { InputWeatherData,  WeatherData } from "./interfaces/Weather";
-import LocationWeather from "./LocationWeather";
-import processDataFromCSV from "./services/csv-parsing-service";
+import { Airport } from "../interfaces/Airport";
+import { Time } from "../interfaces/Time";
+import { InputWeatherData,  TimeZone,  WeatherData } from "../interfaces/Weather";
+import LocationWeather from "../LocationWeather";
+import processDataFromCSV from "../services/csv-parsing-service";
 
 export default async function parseWeather(allowedAirports: Airport[]): Promise<LocationWeather[]> {
     const tempArray: WeatherData[] = []
     let tempAirportName: string = ''
     let tempAirport: Airport
     const locationWeathers = [] as LocationWeather[]
-    await processDataFromCSV('./datasets/WeatherEvents_Jan2016-Dec2020.csv', (weatherData: InputWeatherData, stream) => {
+    await processDataFromCSV('./datasets/WeatherEvents_Jan2016-Dec2020.csv', async (weatherData: InputWeatherData, stream) => {
 
         if(tempAirportName !== weatherData.AirportCode) {
             if(tempArray.length !== 0 && tempAirport) {
@@ -30,7 +30,7 @@ export default async function parseWeather(allowedAirports: Airport[]): Promise<
             minutes
         }
         const newWeatherData: WeatherData = {
-            timeZone: weatherData.TimeZone,
+            timeZone: weatherData.TimeZone as TimeZone,
             time,
             ident: weatherData.AirportCode,
             type: weatherData.Type,

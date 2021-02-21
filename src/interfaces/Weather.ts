@@ -19,14 +19,15 @@ export interface InputWeatherData {
     ZipCode: string
 }
 
+export type TimeZone = 'US/Central' | 'US/Eastern' | 'US/Mountain' | 'US/Pacific'
 export interface Weather {
     type: WeatherType
     severity: WeatherSeverity
     time: Time,
+    timeZone: TimeZone
 }
 
 export interface WeatherData extends Weather {
-    timeZone: string,
     ident: string,
 }
 
