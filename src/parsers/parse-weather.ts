@@ -4,7 +4,7 @@ import { InputWeatherData,  TimeZone,  WeatherData } from "../interfaces/Weather
 import LocationWeather from "../LocationWeather";
 import processDataFromCSV from "../services/csv-parsing-service";
 
-export default async function parseWeather(allowedAirports: Airport[]): Promise<LocationWeather[]> {
+export default async function parseWeather(allowedAirports: Airport[], currentYear: number): Promise<LocationWeather[]> {
     const tempArray: WeatherData[] = []
     let tempAirportName: string = ''
     let tempAirport: Airport
@@ -22,8 +22,9 @@ export default async function parseWeather(allowedAirports: Airport[]): Promise<
         if(!tempAirport) return;
         
         const [[year, month, day], [hours, minutes]] = weatherData["StartTime(UTC)"].split(' ').map((item, index) => item.split(index === 0 ? '-' : ':').map(str => parseInt(str)))
-        if(year !== 2016) return;
+        if(year !== currentYear) return;
         const time: Time = {
+            year,
             month,
             day,
             hours, 

@@ -18,6 +18,9 @@ export default async function uploadDefaultTimes() {
     const times = hours.reduce((prev, hours) => [...prev, ...minutes.map(minutes => ({ hours, minutes }))], [] as { minutes: number, hours: number }[])
     const requestForTimes = `INSERT INTO "DimTime" ("hours", "minutes") VALUES
     ${times.map(({ minutes, hours }) => `('${hours}', '${minutes}')`)}`
+    const years = Array.from({ length: 5 }, (v, k) => k + 2016)
+    const requestForYears = `INSERT INTO "DimYear" ("yearNumber") VALUES
+    ${years.map((year) => `(${year})`)}`
 
-    await Promise.all([useDatabaseQuery(`${requestForDates}; ${requestForTimes}`)])
+    await useDatabaseQuery(`${requestForDates}; ${requestForTimes}; ${requestForYears}`)
 }

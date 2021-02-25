@@ -1,27 +1,26 @@
 import uploadFacts from "../db/fact-delays";
 import LocationWeather from "../LocationWeather";
-import { Airport } from "../interfaces/Airport";
 import { Flight, InputFlightData } from "../interfaces/Flight";
 import { Time } from "../interfaces/Time";
-import processDataFromCSV from "../services/csv-parsing-service";
 import { PgService } from "../services/pg.service";
-import parseCSVByLines from "../services/csv-parser";
+import parseCSVByLines from "../services/async-csv-parser";
 
 
 
-export default async function parseFlights(locationWeathers: LocationWeather[]): Promise<void> {
+export default async function parseFlights(filename: string, locationWeathers: LocationWeather[]): Promise<void> {
     const pgService = new PgService()
     let flight: Flight, flightWithWeather, currentLocation: LocationWeather
 
-    await parseCSVByLines('./datasets/2016.csv', async (flightData: InputFlightData) => {
+    await parseCSVByLines(`./datasets/${filename}.csv`, async (flightData: InputFlightData) => {
         currentLocation = locationWeathers.find(locationWeather => locationWeather.airport.code === flightData.ORIGIN)
         if (!currentLocation) return;
         
-        const [_, month, day] = flightData.FL_DATE.split('-').map(str => parseInt(str))
+        const [year, month, day] = flightData.FL_DATE.split('-').map(str => parseInt(str))
 
         const hours = parseInt(flightData.CRS_DEP_TIME.slice(0, flightData.CRS_DEP_TIME.length - 2)) || 0
         const minutes = parseInt(flightData.CRS_DEP_TIME.slice(flightData.CRS_DEP_TIME.length - 2, flightData.CRS_DEP_TIME.length))
         const newTime: Time = {
+            year,
             month,
             day,
             hours,

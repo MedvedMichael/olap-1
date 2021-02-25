@@ -35,6 +35,11 @@ CREATE TABLE IF NOT EXISTS "DimTime" (
 	"minutes" INT
 );
 
+CREATE TABLE "DimYear"(
+	"yearID" SERIAL PRIMARY KEY,
+	"yearNumber" INT UNIQUE
+);
+
 CREATE TABLE IF NOT EXISTS "DimTimeZone" (
 	"timeZoneID" SERIAL PRIMARY KEY,
 	"name" VARCHAR(255)
@@ -53,6 +58,7 @@ CREATE TABLE IF NOT EXISTS "FactDelays" (
 	"regionID" INT REFERENCES "DimRegion",
 	"expectedDepartureTimeID" INT REFERENCES "DimTime",
 	"dateID" INT REFERENCES "DimDate",
+	"yearID" INT REFERENCES "DimYear",
 	"airlineID" INT REFERENCES "DimAirline",
 	"timeZoneID" INT REFERENCES "DimTimeZone",
 	"weatherID" INT REFERENCES "DimWeather",

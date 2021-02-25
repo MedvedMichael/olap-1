@@ -3,23 +3,26 @@ import parseFlights from './parsers/parse-flights';
 import parseWeather from './parsers/parse-weather';
 import * as dotenv from 'dotenv';
 import uploadAirports from './db/airports';
-import { PgService } from './services/pg.service';
 import { uploadDefaultWeather } from './db/weather';
 import uploadDefaultTimes from './db/times';
 import { uploadDefaultTimeZones } from './db/time-zones';
 import { uploadDefaultRegions } from './db/regions';
-import filterArrayFromDublicates from './services/array-distinct'
-import uploadFacts from './db/fact-delays';
-import { Weather } from './interfaces/Weather';
-import { Flight } from './interfaces/Flight';
 import { uploadDefaultAirlines } from './db/airlines';
 import { uploadDefaultFlights } from './db/flights';
-import parseCSVByLines from './services/csv-parser';
+
+import readline from 'readline';
+import readConsole from './services/read-console';
+
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 dotenv.config();
 
 
 (async () => {
+    const year = await readConsole(rl, 'Input year for uploading flights: ')
     const airports = await parseAirports()
     console.log("Airports parsed")
     // await uploadDefaultWeather() //done
@@ -31,7 +34,8 @@ dotenv.config();
     // await uploadDefaultFlights() //done
     // console.log("Defaults uploaded")
 
-    const locationWeathers = await parseWeather(airports)
+    const locationWeathers = await parseWeather(airports, parseInt(year))
     console.log("Weather parsed")
-    await parseFlights(locationWeathers)
+    await parseFlights(year, locationWeathers)
+    console.log('Done')
 })()
