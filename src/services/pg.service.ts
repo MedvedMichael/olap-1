@@ -14,7 +14,7 @@ export class PgService {
 }
 
 
-export default async function useDatabaseQuery(request: string, values?: any) {
+export default async function useDatabaseQuery(request: string, values?: any): Promise<void> {
     const pgService = new PgService()
     await pgService.useQuery(request, values)
     await pgService.stop()

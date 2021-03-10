@@ -7,9 +7,9 @@ const mapFunction = ({ iata_code, name, latitude_deg, longitude_deg, ident, iso_
     ({ code: iata_code, name, latitude: latitude_deg, longitude: longitude_deg, ident, region: iso_region }) as Airport
 
 
-export default async function parseAirports(): Promise<Airport[]> {
+export default async function parseAirports(filename: string): Promise<Airport[]> {
     const airports: Airport[] = []
-    await processDataFromCSV('./datasets/airports.csv', async (airportsData: InputAirportData, stream) => {
+    await processDataFromCSV(filename, async (airportsData: InputAirportData, stream) => {
         if (!filterFunction(airportsData)) return;
         const mappedData = mapFunction(airportsData)
         airports.push(mappedData)

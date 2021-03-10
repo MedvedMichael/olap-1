@@ -6,15 +6,17 @@ CREATE TABLE IF NOT EXISTS "DimRegion" (
 
 CREATE TABLE IF NOT EXISTS "DimAirport" (
 	"airportID" SERIAL PRIMARY KEY,
-	"code" VARCHAR(10),
+	"code" VARCHAR(10) UNIQUE,
 	"airportName" VARCHAR(255),
 	"latitude" REAL,
-	"longtitude" REAL
+	"longtitude" REAL,
+	"previousName" VARCHAR (255), 
+	"effectiveDate" DATE
 );
 
 CREATE TABLE IF NOT EXISTS "DimAirline" (
 	"airlineID" SERIAL PRIMARY KEY,
-	"name" VARCHAR(100)
+	"name" VARCHAR(100) UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS "DimWeather" (
@@ -26,18 +28,14 @@ CREATE TABLE IF NOT EXISTS "DimWeather" (
 CREATE TABLE IF NOT EXISTS "DimDate" (
 	"dateID" SERIAL PRIMARY KEY,
 	"month" INT,
-	"day" INT
+	"day" INT,
+	"year" INT
 );
 
 CREATE TABLE IF NOT EXISTS "DimTime" (
 	"timeID" SERIAL PRIMARY KEY,
 	"hours" INT,
 	"minutes" INT
-);
-
-CREATE TABLE "DimYear"(
-	"yearID" SERIAL PRIMARY KEY,
-	"yearNumber" INT UNIQUE
 );
 
 CREATE TABLE IF NOT EXISTS "DimTimeZone" (
@@ -58,7 +56,6 @@ CREATE TABLE IF NOT EXISTS "FactDelays" (
 	"regionID" INT REFERENCES "DimRegion",
 	"expectedDepartureTimeID" INT REFERENCES "DimTime",
 	"dateID" INT REFERENCES "DimDate",
-	"yearID" INT REFERENCES "DimYear",
 	"airlineID" INT REFERENCES "DimAirline",
 	"timeZoneID" INT REFERENCES "DimTimeZone",
 	"weatherID" INT REFERENCES "DimWeather",
