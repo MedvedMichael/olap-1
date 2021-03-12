@@ -65,3 +65,30 @@ CREATE TABLE IF NOT EXISTS "FactDelays" (
 	"airTime" REAL,
 	"distance" REAL
 );
+
+
+CREATE FUNCTION public."AirportsSCD"()
+    RETURNS trigger
+    LANGUAGE 'plpgsql'
+    COST 100
+    VOLATILE NOT LEAKPROOF
+AS $BODY$
+DECLARE
+    oldID INT;
+BEGIN
+    oldID = (SELECT "airportID" FROM "DimAirport" WHERE "code" = NEW."code");
+	IF oldID IS NULL 
+	THEN RETURN NEW;
+	ELSE
+		UPDATE "DimAirport"
+		SET "airportName" = NEW."airportName",
+		"previousName" = (SELECT "airportName" FROM "DimAirport" WHERE "airportID" = oldID),
+		"effectiveDate" = NOW()
+		WHERE "airportID" = oldID;
+		RETURN NULL;
+	END IF;
+END;
+$BODY$;
+
+CREATE TRIGGER "AirportsSCDTrigger" BEFORE INSERT ON "DimAirport"
+FOR EACH ROW EXECUTE PROCEDURE "AirportsSCD"();
